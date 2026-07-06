@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
-import { extractItems, getEndpoint } from './apiClient'
+import { extractItems } from './apiClient'
 
 function Workouts() {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+  const endpoint = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev/api/workouts/`
+    : 'http://localhost:8000/api/workouts/'
+
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -14,7 +19,7 @@ function Workouts() {
       setError('')
 
       try {
-        const response = await fetch(getEndpoint('workouts'), {
+        const response = await fetch(endpoint, {
           signal: controller.signal,
         })
 
@@ -36,7 +41,7 @@ function Workouts() {
 
     loadWorkouts()
     return () => controller.abort()
-  }, [])
+  }, [endpoint])
 
   return (
     <section>

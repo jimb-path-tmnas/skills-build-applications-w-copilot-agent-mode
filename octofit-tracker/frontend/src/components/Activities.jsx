@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
-import { extractItems, formatReference, getEndpoint } from './apiClient'
+import { extractItems, formatReference } from './apiClient'
 
 function Activities() {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+  const endpoint = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev/api/activities/`
+    : 'http://localhost:8000/api/activities/'
+
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -14,7 +19,7 @@ function Activities() {
       setError('')
 
       try {
-        const response = await fetch(getEndpoint('activities'), {
+        const response = await fetch(endpoint, {
           signal: controller.signal,
         })
 
@@ -36,7 +41,7 @@ function Activities() {
 
     loadActivities()
     return () => controller.abort()
-  }, [])
+  }, [endpoint])
 
   return (
     <section>

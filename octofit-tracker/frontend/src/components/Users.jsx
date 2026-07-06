@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
-import { extractItems, formatReference, getEndpoint } from './apiClient'
+import { extractItems, formatReference } from './apiClient'
 
 function Users() {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+  const endpoint = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev/api/users/`
+    : 'http://localhost:8000/api/users/'
+
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -14,7 +19,7 @@ function Users() {
       setError('')
 
       try {
-        const response = await fetch(getEndpoint('users'), {
+        const response = await fetch(endpoint, {
           signal: controller.signal,
         })
 
@@ -36,7 +41,7 @@ function Users() {
 
     loadUsers()
     return () => controller.abort()
-  }, [])
+  }, [endpoint])
 
   return (
     <section>

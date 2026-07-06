@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
-import { extractItems, getEndpoint } from './apiClient'
+import { extractItems } from './apiClient'
 
 function Teams() {
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+  const endpoint = codespaceName
+    ? `https://${codespaceName}-8000.app.github.dev/api/teams/`
+    : 'http://localhost:8000/api/teams/'
+
   const [items, setItems] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -14,7 +19,7 @@ function Teams() {
       setError('')
 
       try {
-        const response = await fetch(getEndpoint('teams'), {
+        const response = await fetch(endpoint, {
           signal: controller.signal,
         })
 
@@ -36,7 +41,7 @@ function Teams() {
 
     loadTeams()
     return () => controller.abort()
-  }, [])
+  }, [endpoint])
 
   return (
     <section>
